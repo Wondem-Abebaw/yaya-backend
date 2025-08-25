@@ -7,12 +7,9 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import {
-  AppService,
-  PaginatedResponse,
-  Transaction,
-  SearchTransactionDto,
-} from './app.service';
+import { AppService } from './app.service';
+import { PaginatedResponse, SearchTransactionDto, Transaction } from './interfaces/transaction.interfaces';
+
 
 @Controller('api')
 export class AppController {

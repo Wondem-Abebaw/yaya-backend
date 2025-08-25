@@ -2,63 +2,30 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosResponse } from 'axios';
 import * as crypto from 'crypto';
-
-export interface TransactionUser {
-  name: string;
-  account: string;
-}
-
-export interface Transaction {
-  id: string;
-  sender: TransactionUser;
-  receiver: TransactionUser;
-  amount_with_currency: string;
-  amount: number;
-  amount_in_base_currency: number;
-  fee: number;
-  currency: string;
-  cause: string;
-  sender_caption: string;
-  receiver_caption: string;
-  created_at_time: number;
-  is_topup: boolean;
-  is_outgoing_transfer: boolean;
-  fee_vat: number;
-  fee_before_vat: number;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-  incomingSum?: number;
-  outgoingSum?: number;
-  lastPage?: number;
-  perPage?: number;
-}
-
-export interface SearchTransactionDto {
-  query: string;
-  page?: number;
-  limit?: number;
-}
+import {
+  PaginatedResponse,
+  SearchTransactionDto,
+  Transaction,
+} from './interfaces/transaction.interfaces';
 
 @Injectable()
 export class AppService {
   private readonly apiKey: string;
   private readonly apiSecret: string;
-  private readonly baseUrl = 'https://sandbox.yayawallet.com';
+  private readonly baseUrl: string;
 
   constructor(private configService: ConfigService) {
     this.apiKey = this.configService.get<string>('YAYA_API_KEY') ?? '';
     this.apiSecret = this.configService.get<string>('YAYA_API_SECRET') ?? '';
+    this.baseUrl =
+      this.configService.get<string>('YAYA_API_BASE_URL') ??
+      'https://sandbox.yayawallet.com';
 
     if (!this.apiKey || !this.apiSecret) {
       throw new Error('YaYa Wallet API credentials not configured');
+    }
+    if (!this.baseUrl) {
+      throw new Error('YaYa Wallet API base URL not configured');
     }
   }
 
@@ -114,10 +81,10 @@ export class AppService {
         },
       );
 
-      console.log(
-        '🚀 ~ AppService ~ getTransactions ~ response:',
-        response.data,
-      );
+      // console.log(
+      //   '🚀 ~ AppService ~ getTransactions ~ response:',
+      //   response.data,
+      // );
 
       // Transform the response to match our expected format
       const transactions = this.transformTransactions(response.data.data || []);
