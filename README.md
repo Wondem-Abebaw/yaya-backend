@@ -1,99 +1,223 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# YaYa Wallet Transaction Dashboard - Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A secure Nest.js API server that acts as a proxy to the YaYa Wallet API for transaction monitoring.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🏗️ Architecture
 
-## Description
+The backend serves as a secure intermediary between the frontend and YaYa Wallet's API, handling authentication, data processing, and API key management.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Key Features
+- RESTful API endpoints for transaction data
+- HMAC-SHA256 authentication with YaYa Wallet API
+- Secure API key management
+- Search and pagination functionality
+- CORS-enabled for frontend communication
+- Request signing and timestamp validation
 
-## Project setup
+## 🔧 Tech Stack
 
+- **Framework**: Nest.js (Node.js framework)
+- **Language**: TypeScript
+- **HTTP Client**: Axios
+- **Environment**: dotenv for configuration
+- **Authentication**: Custom HMAC-SHA256 implementation
+
+## 📦 Installation & Setup
+
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Setup Instructions
+
+1. **Clone and navigate to backend directory:**
 ```bash
-$ npm install
+git clone <repository-url>
+cd yaya-backend
 ```
 
-## Compile and run the project
-
+2. **Install dependencies:**
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+3. **Create environment file:**
+Create a `.env` file in the backend root directory:
+```env
+YAYA_API_KEY=
+YAYA_API_SECRET=
+PORT=3001
+YAYA_API_BASE_URL=
+CORS_ORIGIN=http://localhost:3000
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+4. **Start the development server:**
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The server will run on `http://localhost:3001` with hot-reload enabled.
 
-## Resources
+## Authentication System
 
-Check out a few resources that may come in handy when working with NestJS:
+### HMAC-SHA256 Implementation
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+The backend implements YaYa Wallet's custom authentication scheme:
 
-## Support
+1. **Request Signing Process**:
+   - Generate timestamp (Unix timestamp in seconds)
+   - Create signature string: `{method}{endpoint}{timestamp}{body}`
+   - Compute HMAC-SHA256 hash using secret key
+   - Encode signature as Base64
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+2. **Headers Added to Each Request**:
+   ```
+   YAYA-API-KEY: {api_key}
+   YAYA-API-TIMESTAMP: {timestamp}
+   YAYA-API-SIGNATURE: {base64_signature}
+   Content-Type: application/json
+   ```
 
-## Stay in touch
+### Security Features
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **API Key Protection**: Credentials never exposed to frontend
+- **Timestamp Validation**: Prevents replay attacks (5-second window)
+- **Request Integrity**: Complete request content is signed
+- **Environment Separation**: Different configs for dev/production
 
-## License
+##  API Endpoints
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# yaya-backend
+### GET /api/transactions
+
+Retrieve paginated transactions.
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10, max: 100)
+
+
+
+## 🧪 Testing
+
+### Manual Testing
+
+Test the API endpoints directly using curl:
+
+```bash
+# Get transactions with pagination
+curl -X GET "http://localhost:3001/api/transactions?page=1&limit=10"
+
+# Search transactions
+curl -X POST "http://localhost:3001/api/transactions/search" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "test", "page": 1, "limit": 10}'
+
+# Test with different page sizes
+curl -X GET "http://localhost:3001/api/transactions?page=2&limit=5"
+```
+
+### Health Check
+
+```bash
+# Basic connectivity test
+curl -X GET "http://localhost:3001"
+```
+
+### Error Handling Test Cases
+
+1. **Invalid Page Numbers**: Test negative or zero page numbers
+2. **Excessive Limits**: Test limits above maximum allowed
+3. **Malformed Search**: Test search with empty or invalid queries
+4. **Network Errors**: Test behavior when YaYa API is unavailable
+
+## 🚀 Production Deployment
+
+### Environment Configuration
+
+For production deployment, update your `.env` file:
+
+```env
+NODE_ENV=production
+YAYA_API_KEY=your_production_api_key
+YAYA_API_SECRET=your_production_api_secret
+PORT=3001
+CORS_ORIGIN=https://yourdomain.com
+```
+
+### Security Checklist
+
+- [ ] Use production API credentials
+- [ ] Configure CORS for production domain
+- [ ] Enable HTTPS
+- [ ] Set up proper logging
+- [ ] Configure rate limiting
+- [ ] Set up monitoring and health checks
+- [ ] Use environment variables for all sensitive data
+
+
+
+## 📁 Project Structure
+
+```
+backend/
+├── src/
+│   ├── app.controller.ts    # Main API endpoints
+│   ├── app.service.ts       # Business logic and YaYa API integration
+│   ├── app.module.ts        # Module configuration
+│   └── main.ts              # Application bootstrap
+├── package.json
+├── tsconfig.json
+├── nest-cli.json
+└── .env                     # Environment variables (not in git)
+```
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `YAYA_API_KEY` | YaYa Wallet API key | Yes | - |
+| `YAYA_API_SECRET` | YaYa Wallet API secret | Yes | - |
+| `PORT` | Server port | No | 3000 |
+| `CORS_ORIGIN` | Allowed CORS origin | No | * |
+| `NODE_ENV` | Environment mode | No | development |
+
+### CORS Configuration
+
+The server is configured to accept requests from the frontend. In development, it allows `http://localhost:3000`. For production, update `CORS_ORIGIN` to match your frontend domain.
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+1. **Authentication Errors (401)**:
+   - Check API key and secret in `.env` file
+   - Verify timestamp generation (system clock sync)
+   - Ensure signature generation matches YaYa requirements
+
+2. **CORS Errors**:
+   - Update `CORS_ORIGIN` in `.env` file
+   - Restart server after environment changes
+
+3. **Connection Timeouts**:
+   - Check YaYa Wallet API status
+   - Verify network connectivity
+   - Review timeout settings in service
+
+### Debug Mode
+
+Enable detailed logging by setting:
+```env
+NODE_ENV=development
+```
+
+This will show detailed request/response information and signature generation steps.
+
+## 📞 Support
+
+For backend-specific issues:
+1. Check the console logs for detailed error messages
+2. Verify all environment variables are set correctly
+3. Test API connectivity using the manual testing commands above
+4. Review the YaYa Wallet API documentation for any changes
