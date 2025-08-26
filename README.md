@@ -7,6 +7,7 @@ A secure Nest.js API server that acts as a proxy to the YaYa Wallet API for tran
 The backend serves as a secure intermediary between the frontend and YaYa Wallet's API, handling authentication, data processing, and API key management.
 
 ### Key Features
+
 - RESTful API endpoints for transaction data
 - HMAC-SHA256 authentication with YaYa Wallet API
 - Secure API key management
@@ -25,24 +26,28 @@ The backend serves as a secure intermediary between the frontend and YaYa Wallet
 ## 📦 Installation & Setup
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - npm or yarn
 
 ### Setup Instructions
 
 1. **Clone and navigate to backend directory:**
+
 ```bash
 git clone <repository-url>
 cd yaya-backend
 ```
 
 2. **Install dependencies:**
+
 ```bash
 npm install
 ```
 
 3. **Create environment file:**
-Create a `.env` file in the backend root directory:
+   Create a `.env` file in the backend root directory:
+
 ```env
 YAYA_API_KEY=
 YAYA_API_SECRET=
@@ -52,6 +57,7 @@ CORS_ORIGIN=http://localhost:3000
 ```
 
 4. **Start the development server:**
+
 ```bash
 npm run start:dev
 ```
@@ -85,17 +91,16 @@ The backend implements YaYa Wallet's custom authentication scheme:
 - **Request Integrity**: Complete request content is signed
 - **Environment Separation**: Different configs for dev/production
 
-##  API Endpoints
+## API Endpoints
 
 ### GET /api/transactions
 
 Retrieve paginated transactions.
 
 **Query Parameters:**
+
 - `page` (optional): Page number (default: 1)
-- `limit` (optional): Items per page (default: 10, max: 100)
-
-
+- `limit` (optional): Items per page (default: 15, max: 100)
 
 ## 🧪 Testing
 
@@ -103,25 +108,22 @@ Retrieve paginated transactions.
 
 Test the API endpoints directly using curl:
 
-```bash
+````bash
 # Get transactions with pagination
-curl -X GET "http://localhost:3001/api/transactions?page=1&limit=10"
+curl -X GET "http://localhost:3001/api/transactions?page=1&limit=15"
 
 # Search transactions
 curl -X POST "http://localhost:3001/api/transactions/search" \
   -H "Content-Type: application/json" \
-  -d '{"query": "test", "page": 1, "limit": 10}'
+  -d '{"query": "test", "page": 1, "limit": 15}'
 
-# Test with different page sizes
-curl -X GET "http://localhost:3001/api/transactions?page=2&limit=5"
-```
 
 ### Health Check
 
 ```bash
 # Basic connectivity test
 curl -X GET "http://localhost:3001"
-```
+````
 
 ### Error Handling Test Cases
 
@@ -154,8 +156,6 @@ CORS_ORIGIN=https://yourdomain.com
 - [ ] Set up monitoring and health checks
 - [ ] Use environment variables for all sensitive data
 
-
-
 ## 📁 Project Structure
 
 ```
@@ -175,13 +175,13 @@ backend/
 
 ### Environment Variables
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `YAYA_API_KEY` | YaYa Wallet API key | Yes | - |
-| `YAYA_API_SECRET` | YaYa Wallet API secret | Yes | - |
-| `PORT` | Server port | No | 3000 |
-| `CORS_ORIGIN` | Allowed CORS origin | No | * |
-| `NODE_ENV` | Environment mode | No | development |
+| Variable          | Description            | Required | Default     |
+| ----------------- | ---------------------- | -------- | ----------- |
+| `YAYA_API_KEY`    | YaYa Wallet API key    | Yes      | -           |
+| `YAYA_API_SECRET` | YaYa Wallet API secret | Yes      | -           |
+| `PORT`            | Server port            | No       | 3000        |
+| `CORS_ORIGIN`     | Allowed CORS origin    | No       | \*          |
+| `NODE_ENV`        | Environment mode       | No       | development |
 
 ### CORS Configuration
 
@@ -208,6 +208,7 @@ The server is configured to accept requests from the frontend. In development, i
 ### Debug Mode
 
 Enable detailed logging by setting:
+
 ```env
 NODE_ENV=development
 ```
@@ -217,6 +218,7 @@ This will show detailed request/response information and signature generation st
 ## 📞 Support
 
 For backend-specific issues:
+
 1. Check the console logs for detailed error messages
 2. Verify all environment variables are set correctly
 3. Test API connectivity using the manual testing commands above

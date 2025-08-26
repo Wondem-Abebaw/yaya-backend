@@ -60,9 +60,10 @@ export class AppService {
   }
 
   async getTransactions(
-    page: number = 1,
-    limit: number = 10,
+    p: number = 1,
+    limit: number = 15,
   ): Promise<PaginatedResponse<Transaction>> {
+    console.log('🚀 ~ AppService ~ getTransactions ~ p:', p);
     try {
       const endpoint = '/api/en/transaction/find-by-user';
       const method = 'GET';
@@ -75,7 +76,7 @@ export class AppService {
         {
           headers,
           params: {
-            page,
+            p,
             limit,
           },
         },
@@ -92,7 +93,7 @@ export class AppService {
       return {
         data: transactions,
         pagination: {
-          page: Number(page),
+          page: Number(p),
           limit: Number(limit),
           total: response.data.total || transactions.length,
           totalPages:
@@ -120,7 +121,7 @@ export class AppService {
     searchDto: SearchTransactionDto,
   ): Promise<PaginatedResponse<Transaction>> {
     try {
-      const { query, page = 1, limit = 10 } = searchDto;
+      const { query, page = 1, limit = 15 } = searchDto;
       const endpoint = '/api/en/transaction/search';
       const method = 'POST';
       const requestBody = JSON.stringify({ query });
